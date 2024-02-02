@@ -128,7 +128,7 @@ body {
     <script>
         const scriptURL = 'https://script.google.com/macros/s/AKfycbwFhu-1ep6xX77oaVh7vI9LxwoDQgoBkUpkuxXKEMmHLfAMvnes7J5wG2GtbeOkhBBLXg/exec';
         const form = document.forms['contact-form'];
-
+    
         function generateUniqueCode() {
             const chars = '123456789';
             let code = '';
@@ -137,33 +137,46 @@ body {
             }
             return code;
         }
-
+    
         function displaySuccessMessage(uniqueCode) {
-            alert("Thank you! Your form is submitted successfully. Your unique code is: " + uniqueCode);
-        }
+    console.log("Unique code generated:", uniqueCode);
+    const confirmation = confirm("شكرا! لقد تم ارسال بياناتك بنجاح و كووووووودك: " + uniqueCode + ".");
+    const confirmation_2 = confirm("حفظ الكود مهمتك الشخصيه كودك هو: " + uniqueCode );
+    const confirmation_3 = confirm("Click OK to visit the primary secondary page.");
+    console.log("Confirmation:", confirmation);
+    if (confirmation) {
+        console.log("Redirecting to primary secondary page...");
+        window.location.href = 'https://yamenxy.github.io/goto/';
+    }
+}
 
+    
         form.addEventListener('submit', e => {
             e.preventDefault();
+            console.log("Form submitted.");
             let isValid = true;
-
+    
             const studentNumber = form.elements['رقم الطالب'].value.trim();
             const guardianNumber = form.elements['رقم ولي الامر'].value.trim();
-
+    
             if (!isValidNumber(studentNumber)) {
                 isValid = false;
                 alert("رقم الطالب غير صحيح. يجب أن يبدأ بـ 010، 011، 012، أو 015 ويحتوي على 11 رقمًا.");
             }
-
+    
             if (!isValidNumber(guardianNumber)) {
                 isValid = false;
                 alert("رقم ولي الأمر غير صحيح. يجب أن يبدأ بـ 010، 011، 012، أو 015 ويحتوي على 11 رقمًا.");
             }
-
+    
             if (isValid) {
+                console.log("Form is valid. Generating unique code...");
                 const uniqueCode = generateUniqueCode();
                 document.getElementById('unique_code').value = uniqueCode;
+                console.log("Unique code set in hidden field:", uniqueCode);
                 fetch(scriptURL, { method: 'POST', body: new FormData(form) })
                     .then(response => {
+                        console.log("Form submission response:", response);
                         displaySuccessMessage(uniqueCode);
                         return response;
                     })
@@ -173,11 +186,13 @@ body {
                     });
             }
         });
-
+    
         function isValidNumber(number) {
             const validPrefixes = ['010', '011', '012', '015'];
             return /^\d{11}$/.test(number) && validPrefixes.includes(number.substring(0, 3));
         }
     </script>
+    
+    
 </body>
 </html>
