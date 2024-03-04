@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+																		<!DOCTYPE html>
 <html>
 <head>
     <title>Form with Unique Code</title>
@@ -134,11 +134,13 @@
 </head>
 <body>
     <div class="container">
-        <form action="https://script.google.com/macros/s/AKfycbwFhu-1ep6xX77oaVh7vI9LxwoDQgoBkUpkuxXKEMmHLfAMvnes7J5wG2GtbeOkhBBLXg/exec" name="contact-form" onsubmit="return false">
+        <form action="https://script.google.com/macros/s/AKfycbxHm697lx04gwP8u9tsbxl6BMkQKi0LClI03uehQZbz5LRpnvBYC-Zthr8MbzqfXc1t4g/exec" name="contact-form" onsubmit="return false">
             <h4>Enter Your Data</h4>
             <input type="text" name="الاسم" placeholder="اسم الطالب رباعي" required>
             <input type="text" name="رقم الطالب" placeholder="رقم الطالب" required>
             <input type="text" name="رقم ولي الامر" placeholder="رقم ولي الامر" required>
+            <input type="password" name="password" placeholder="كلمة المرور" required>
+            <input type="password" name="confirm_password" placeholder="تأكيد كلمة المرور" required>
             <br>
             <select name="اسم السنتر" required>
                 <option value="" placeholder="" style="">اختر اسم السنتر</option>
@@ -157,7 +159,7 @@
     </div>
     
     <script>
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbyiH3bpZBm_wN9KwS7IOarHUM7l0FDmxKxstM9xrhdYgTUPqxSG2yVQ6AB96QuIOHXZEg/exec';
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxHm697lx04gwP8u9tsbxl6BMkQKi0LClI03uehQZbz5LRpnvBYC-Zthr8MbzqfXc1t4g/exec';
         const form = document.forms['contact-form'];
 
         function generateUniqueCode() {
@@ -179,20 +181,68 @@
             }
         }
 
-        form.addEventListener('submit', e => {
-            e.preventDefault();
-            console.log("Form submitted.");
-            let isValid = true;
+        function isStrongPassword(password) {
+    // At least 8 characters
+    const minLength = 8;
+    if (password.length < minLength) {
+        return false;
+    }
 
-            const name = form.elements['الاسم'].value.trim();
-            const studentNumber = form.elements['رقم الطالب'].value.trim();
-            const guardianNumber = form.elements['رقم ولي الامر'].value.trim();
+    // Should contain at least one uppercase letter
+    const uppercaseRegex = /[A-Z]/;
+    if (!uppercaseRegex.test(password)) {
+        return false;
+    }
+
+    // Should contain at least one lowercase letter
+    const lowercaseRegex = /[a-z]/;
+    if (!lowercaseRegex.test(password)) {
+        return false;
+    }
+
+    // Should contain at least one number
+    const numberRegex = /[0-9]/;
+    if (!numberRegex.test(password)) {
+        return false;
+    }
+
+    // Should contain at least one special character
+    const specialCharRegex = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+    if (!specialCharRegex.test(password)) {
+        return false;
+    }
+
+    return true;
+}
+
 
             // Validation code here...
-            if (!isValidArabic(name)) {
+           
+            form.addEventListener('submit', e => {
+    e.preventDefault();
+    console.log("Form submitted.");
+    let isValid = true;
+
+    // Get the values of all form fields
+    const name = form.elements['الاسم'].value.trim();
+    const studentNumber = form.elements['رقم الطالب'].value.trim();
+    const guardianNumber = form.elements['رقم ولي الامر'].value.trim();
+    const password = form.elements['password'].value.trim();
+    const confirmPassword = form.elements['confirm_password'].value.trim();
+
+    // Validation code for name, studentNumber, guardianNumber, and other fields...
+    // Your existing validation code...
+
+    if (!isValidArabic(name)) {
                 isValid = false;
                 alert("ادخل الاسم باللغه العربيه!");
             }
+
+    // Password validation
+    if (password !== confirmPassword) {
+        isValid = false;
+        alert("كلمات المرور غير متطابقة!");
+    }        
 
             const wordsCount = name.split(" ").length;
             if (name.includes("عبد") && wordsCount < 5 ) { // Check if name contains "عبد" and has exactly five words
@@ -221,6 +271,11 @@
                 alert("ادخل رقم ولي الامر صحيح!");
             }
 
+            if (!isStrongPassword(password)) {
+        isValid = false;
+        alert("كلمة المرور ضعيفة! يجب أن تحتوي على 8 أحرف على الأقل، وعلى الأقل حرف كبير، حرف صغير، رقم وحرف خاص.");
+    }
+
             if (isValid) {
                 console.log("Form is valid. Generating unique code...");
                 const uniqueCode = generateUniqueCode();
@@ -232,6 +287,18 @@
                         displaySuccessMessage(uniqueCode);
                     })
                     .catch(error => console.error('Error!', error.message));
+                    isValid = false;
+                    document.getElementById('submit').disabled = true;
+            }
+
+            
+        });
+
+        document.getElementById('getCode').addEventListener('click', () => {
+            if (generatedCode) { // Check if a code has been generated previously
+                alert("Your unique code is: " + generatedCode);
+            } else {
+                alert("No unique code generated yet.");
             }
         });
 
