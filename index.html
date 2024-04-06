@@ -168,10 +168,11 @@
                 <option value="الاسماعليه حدائق المعادي">الاسماعليه حدائق المعادي</option>
                 <option value="لرحمه المعادي">الرحمه المعادي</option>
                 <option value="اشراقه السادس">اشراقه السادس</option>
-                <option value="الامل السابع">الامل السابع</option>
+                <option value="اكتوبراشراقه حدائق"> اكتوبراشراقه حدائق</option>
                 <option value="الامل الحصري">الامل الحصري</option>
                 <option value="اسك الحادي عشر">اسك الحادي عشر</option>
                 <option value="اسمارت السابع">اسمارت السابع</option>
+                <option value="الربوه">الربوه</option>
             </select>
             <input type="hidden" name="الكود" id="unique_code">
             <br><br><br>
@@ -185,7 +186,7 @@
     </div>
     
     <script>            
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbzKSCpw5RnppjOuo4ql9qaITNhBwFFSKGMxKggF8PyPR3vK4Y7qi9dcAaS9ipHaInLlvg/exec';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxG0S_TEI6iFYeML2IFKnoFhYYSGE0Ep6et1LPv4KwXE8Cb6WrlvIBo-eq4doCf1JoIUA/exec';
         const form = document.forms['contact-form'];
         const loadingBox = document.getElementById('loadingBox');
         isValid=true;
@@ -225,32 +226,36 @@
     // At least 8 characters
     const minLength = 8;
     if (password.length < minLength) {
+        alert("كلمة المرور ضعيفة! يجب أن تحتوي على 8 أحرف على الأقل.");
         return false;
     }
 
     // Should contain at least one uppercase letter
     const uppercaseRegex = /[A-Z]/;
     if (!uppercaseRegex.test(password)) {
+        alert("كلمة المرور ضعيفة! يجب أن تحتوي على حروف كبيره.");
         return false;
     }
 
     // Should contain at least one lowercase letter
     const lowercaseRegex = /[a-z]/;
     if (!lowercaseRegex.test(password)) {
+        alert("كلمة المرور ضعيفة! يجب أن تحتوي علي حروف صغيره.");
         return false;
     }
 
     // Should contain at least one number
     const numberRegex = /[0-9]/;
     if (!numberRegex.test(password)) {
+        alert("كلمة المرور ضعيفة! يجب أن تحتوي على ارقام.");
         return false;
     }
 
     // Should contain at least one special character
-    const specialCharRegex = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
-    if (!specialCharRegex.test(password)) {
-        return false;
-    }
+    // const specialCharRegex = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+    // if (!specialCharRegex.test(password)) {
+    //     return false;
+    // }
 
     return true;
 }
@@ -313,7 +318,6 @@
 
     if (!isStrongPassword(password)) {
         isValid = false;
-        alert("كلمة المرور ضعيفة! يجب أن تحتوي على 8 أحرف على الأقل، وعلى الأقل حرف كبير، حرف صغير، رقم وحرف خاص.");
     }
 
     if (isValid) {
