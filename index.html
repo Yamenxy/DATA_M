@@ -388,61 +388,58 @@
     }
 
     function initScanner() {
-        reader = new Html5Qrcode("reader");
+    reader = new Html5Qrcode("reader");
 
-        reader.start(
-            { facingMode: "environment" },
-            {
-                fps: 10,
-                qrbox: { width: 260, height: 140 },
-                aspectRatio: 1.5,
-                disableFlip: true,
-                experimentalFeatures: {
-                    useBarCodeDetectorIfSupported: true
-                },
-                videoConstraints: {
-                    focusMode: "continuous",
-                    width: { ideal: 1280 },
-                    height: { ideal: 720 }
-                }
-            },
-            (decodedText, decodedResult) => {
-                const now = Date.now();
+    reader.start(
+        { facingMode: "environment" },
+        {
+            fps: 10,
+            qrbox: { width: 300, height: 150 },
+            aspectRatio: 1.5,
+            disableFlip: false
+        },
+        (decodedText, decodedResult) => {
+            console.log("Scanned:", decodedText);
 
-                // ✅ لو مش 5 أرقام → خطأ للمستخدم
-                if (!/^\d{5}$/.test(decodedText)) {
-                    document.getElementById("error-message").innerText = "❌ الكود غير صالح. يجب أن يكون مكون من 5 أرقام فقط.";
-                    return;
-                }
-
-                // منع القراءة السريعة
-                if (now - lastScanTime < SCAN_DELAY) return;
-                lastScanTime = now;
-
-                if (decodedText === lastScanned) {
-                    confirmations++;
-                } else {
-                    lastScanned = decodedText;
-                    confirmations = 1;
-                }
-
-                if (confirmations >= REQUIRED_CONFIRMATIONS) {
-                    document.getElementById("unique_code").value = decodedText;
-                    document.getElementById("error-message").innerText = ""; // مسح أي خطأ بعد نجاح القراءة
-
-                    reader.stop().then(() => {
-                        document.getElementById("reader").style.display = "none";
-                        console.log("✅ Final code:", decodedText);
-                    }).catch(err => console.error("Stop error:", err));
-                }
-            },
-            (errorMessage) => {
-                // تجاهل errors الداخلية
+            // ✅ Accept only numeric barcodes of exactly 5 digits
+            if (!/^\d{5}$/.test(decodedText)) {
+                showErrorMessage("⚠️ يجب أن يكون الباركود مكون من 5 أرقام فقط.");
+                return;
             }
-        ).catch(err => {
-            console.error("Camera start failed:", err);
-        });
-    }
+
+            if (decodedText === lastScanned) {
+                confirmations++;
+            } else {
+                lastScanned = decodedText;
+                confirmations = 1;
+            }
+
+            // ✅ Confirm after REQUIRED_CONFIRMATIONS times
+            if (confirmations >= REQUIRED_CONFIRMATIONS) {
+                document.getElementById("unique_code").value = decodedText;
+
+                // stop scanner to avoid multiple inputs
+                reader.stop().then(() => {
+                    document.getElementById("reader").style.display = "none";
+                    console.log("Scanner stopped after successful read.");
+                }).catch(err => console.error("Stop error:", err));
+            }
+        },
+        (errorMessage) => {
+            // scanning errors (ignored silently)
+        }
+    ).catch(err => {
+        console.error("Camera start failed:", err);
+    });
+}
+
+// ✅ Function to show error messages
+function showErrorMessage(msg) {
+    successMessage.textContent = msg;
+    successModal.style.display = 'block';
+    document.getElementById('overlay').style.display = 'block';
+}
+
 </script>
 
 
@@ -682,6 +679,7 @@
 
 </body>
 </html>
+
 
 
 
