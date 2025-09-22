@@ -299,35 +299,21 @@
                         <option value="انس (كومباوند المخابرات)">انس (كومباوند المخابرات)</option>
                         <option value="الشمس">الشمس</option>
                     </select>
-<label style="font-size: 1em; color: #4a4a4a; margin-top: 15px;">الباركود:</label>
-<input 
-    type="text" 
-    name="الكود" 
-    id="unique_code" 
-    readonly 
-    placeholder="سيظهر هنا رقم الباركود بعد المسح"
-    inputmode="numeric" 
-    pattern="\d{5}" 
-    maxlength="5" 
-    minlength="5"
-    title="الباركود يجب أن يكون 5 أرقام فقط">
-
-<div id="reader" style="width:300px; height:200px; display:none;"></div>
-
-
-<div id="error-message" style="color:red; margin-top:10px; font-weight:bold;"></div>
-
-<div id="reader" style="display: none; width: 100%; height: auto; position: relative;">
-  <div style="
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 80%;
-      height: 60px;
-      transform: translate(-50%, -50%);
-      border: 2px dashed white;
-      border-radius: 10px;
-      z-index: 10;"></div>
+                    <label style="font-size: 1em; color: #4a4a4a; margin-top: 15px;">الباركود:</label>
+<input type="text" name="الكود" id="unique_code" readonly placeholder="سيظهر هنا رقم الباركود بعد المسح">
+<div id="barcode-scanner-wrapper" style="margin-top: 10px;">
+  <div id="reader" style="display: none; width: 100%; height: auto; position: relative;">
+    <div style="
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 80%;
+        height: 60px;
+        transform: translate(-50%, -50%);
+        border: 2px dashed white;
+        border-radius: 10px;
+        z-index: 10;"></div>
+  </div>
 </div>
 
 <!-- Buttons OUTSIDE the hidden reader area -->
@@ -377,7 +363,7 @@
         </form>
     </div>
 
-    
+
    <script src="https://unpkg.com/html5-qrcode"></script>
 <script>
     let reader;
@@ -678,10 +664,6 @@
 
 </body>
 </html>
-
-
-
-
 
 
 
