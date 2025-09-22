@@ -392,18 +392,16 @@
   });
 </script>
 
-  <script src="https://unpkg.com/html5-qrcode"></script>
+ <script src="https://unpkg.com/html5-qrcode"></script>
 <script>
     let reader;
     let lastScanned = "";
     let confirmations = 0;
-    const REQUIRED_CONFIRMATIONS = 3;
-    let lastScanTime = 0;
-    const SCAN_DELAY = 1000; // 1 ثانية
+    const REQUIRED_CONFIRMATIONS = 3; // number of times the same code must appear
 
     function startScanner() {
         document.getElementById("reader").style.display = "block";
-        document.getElementById("error-message").innerText = ""; // مسح الأخطاء السابقة
+
         if (reader) {
             reader.stop().then(() => {
                 initScanner();
@@ -414,58 +412,48 @@
     }
 
     function initScanner() {
-    reader = new Html5Qrcode("reader");
+        reader = new Html5Qrcode("reader");
 
-    reader.start(
-        { facingMode: "environment" },
-        {
-            fps: 10,
-            qrbox: { width: 300, height: 150 },
-            aspectRatio: 1.5,
-            disableFlip: false
-        },
-        (decodedText, decodedResult) => {
-            console.log("Scanned:", decodedText);
+        reader.start(
+            { facingMode: "environment" },
+            {
+                fps: 10,
+                qrbox: { width: 300, height: 150 },
+                aspectRatio: 1.5,
+                disableFlip: false
+            },
+            (decodedText, decodedResult) => {
+                console.log("Scanned:", decodedText);
 
-            // ✅ Accept only numeric barcodes of exactly 5 digits
-            if (!/^\d{5}$/.test(decodedText)) {
-                showErrorMessage("⚠️ يجب أن يكون الباركود مكون من 5 أرقام فقط.");
-                return;
+                // ✅ Accept only numeric barcodes (5 digits)
+                if (!/^\d{5}$/.test(decodedText)) return;
+
+                if (decodedText === lastScanned) {
+                    confirmations++;
+                } else {
+                    lastScanned = decodedText;
+                    confirmations = 1;
+                }
+
+                // ✅ Confirm after REQUIRED_CONFIRMATIONS times
+                if (confirmations >= REQUIRED_CONFIRMATIONS) {
+                    document.getElementById("unique_code").value = decodedText;
+
+                    // Stop scanner to avoid multiple inputs
+                    reader.stop().then(() => {
+                        document.getElementById("reader").style.display = "none";
+                        console.log("Scanner stopped after successful read.");
+                    }).catch(err => console.error("Stop error:", err));
+                }
+            },
+            (errorMessage) => {
+                // Suppress scan errors
+                // console.log("Scanning error:", errorMessage);
             }
-
-            if (decodedText === lastScanned) {
-                confirmations++;
-            } else {
-                lastScanned = decodedText;
-                confirmations = 1;
-            }
-
-            // ✅ Confirm after REQUIRED_CONFIRMATIONS times
-            if (confirmations >= REQUIRED_CONFIRMATIONS) {
-                document.getElementById("unique_code").value = decodedText;
-
-                // stop scanner to avoid multiple inputs
-                reader.stop().then(() => {
-                    document.getElementById("reader").style.display = "none";
-                    console.log("Scanner stopped after successful read.");
-                }).catch(err => console.error("Stop error:", err));
-            }
-        },
-        (errorMessage) => {
-            // scanning errors (ignored silently)
-        }
-    ).catch(err => {
-        console.error("Camera start failed:", err);
-    });
-}
-
-// ✅ Function to show error messages
-function showErrorMessage(msg) {
-    successMessage.textContent = msg;
-    successModal.style.display = 'block';
-    document.getElementById('overlay').style.display = 'block';
-}
-
+        ).catch(err => {
+            console.error("Camera start failed:", err);
+        });
+    }
 </script>
 
 
@@ -705,6 +693,7 @@ function showErrorMessage(msg) {
 
 </body>
 </html>
+
 
 
 
