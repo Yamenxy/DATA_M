@@ -299,22 +299,26 @@
                         <option value="انس (كومباوند المخابرات)">انس (كومباوند المخابرات)</option>
                         <option value="الشمس">الشمس</option>
                     </select>
-                    <label style="font-size: 1em; color: #4a4a4a; margin-top: 15px;">الباركود:</label>
+<label style="font-size: 1em; color: #4a4a4a; margin-top: 15px;">الباركود:</label>
 <div id="reader" style="width:300px; height:200px; display:none;"></div>
-<input type="text" id="unique_code" readonly placeholder="سيظهر هنا رقم الباركود بعد المسح">
+
+<!-- ✅ Allow only 5 digits -->
+<input type="text" id="unique_code" readonly placeholder="سيظهر هنا رقم الباركود بعد المسح" maxlength="5" pattern="\d{5}">
+
 <div id="error-message" style="color:red; margin-top:10px; font-weight:bold;"></div>
-  <div id="reader" style="display: none; width: 100%; height: auto; position: relative;">
-    <div style="
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 80%;
-        height: 60px;
-        transform: translate(-50%, -50%);
-        border: 2px dashed white;
-        border-radius: 10px;
-        z-index: 10;"></div>
-  </div>
+
+<div id="reader" style="display: none; width: 100%; height: auto; position: relative;">
+  <div style="
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 80%;
+      height: 60px;
+      transform: translate(-50%, -50%);
+      border: 2px dashed white;
+      border-radius: 10px;
+      z-index: 10;"></div>
+</div>
 </div>
 </div>
 
@@ -365,6 +369,28 @@
         </form>
     </div>
 
+    <script>
+  const input = document.getElementById("unique_code");
+  const errorMsg = document.getElementById("error-message");
+
+  // ✅ Check whenever input changes
+  input.addEventListener("input", function() {
+    // Remove non-digits
+    this.value = this.value.replace(/\D/g, "");
+
+    // Limit to 5 digits
+    if (this.value.length > 5) {
+      this.value = this.value.slice(0, 5);
+    }
+
+    // Show error if not exactly 5 digits
+    if (this.value.length > 0 && this.value.length < 5) {
+      errorMsg.textContent = "⚠️ يجب أن يتكون الباركود من 5 أرقام فقط.";
+    } else {
+      errorMsg.textContent = "";
+    }
+  });
+</script>
 
   <script src="https://unpkg.com/html5-qrcode"></script>
 <script>
@@ -679,6 +705,7 @@ function showErrorMessage(msg) {
 
 </body>
 </html>
+
 
 
 
