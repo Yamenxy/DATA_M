@@ -367,29 +367,6 @@
         </form>
     </div>
 
-<script>
-  const input = document.getElementById("unique_code");
-  const errorMsg = document.getElementById("error-message");
-
-  // ✅ Check whenever input changes
-  input.addEventListener("input", function() {
-    // Remove non-digits
-    this.value = this.value.replace(/\D/g, "");
-
-    // Limit to 5 digits
-    if (this.value.length > 5) {
-      this.value = this.value.slice(0, 5);
-    }
-
-    // Show error if not exactly 5 digits
-    if (this.value.length > 0 && this.value.length < 5) {
-      errorMsg.textContent = "⚠️ يجب أن يتكون الباركود من 5 أرقام فقط.";
-    } else {
-      errorMsg.textContent = "";
-    }
-  });
-</script>
-
     
    <script src="https://unpkg.com/html5-qrcode"></script>
 <script>
@@ -691,6 +668,7 @@
 
 </body>
 </html>
+
 
 
 
