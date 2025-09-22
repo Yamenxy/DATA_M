@@ -300,8 +300,9 @@
                         <option value="الشمس">الشمس</option>
                     </select>
                     <label style="font-size: 1em; color: #4a4a4a; margin-top: 15px;">الباركود:</label>
-<input type="text" name="الكود" id="unique_code" readonly placeholder="سيظهر هنا رقم الباركود بعد المسح">
-<div id="barcode-scanner-wrapper" style="margin-top: 10px;">
+<div id="reader" style="width:300px; height:200px; display:none;"></div>
+<input type="text" id="unique_code" readonly placeholder="سيظهر هنا رقم الباركود بعد المسح">
+<div id="error-message" style="color:red; margin-top:10px; font-weight:bold;"></div>
   <div id="reader" style="display: none; width: 100%; height: auto; position: relative;">
     <div style="
         position: absolute;
@@ -365,17 +366,18 @@
     </div>
 
 
-   <script src="https://unpkg.com/html5-qrcode"></script>
+  <script src="https://unpkg.com/html5-qrcode"></script>
 <script>
     let reader;
     let lastScanned = "";
     let confirmations = 0;
-    const REQUIRED_CONFIRMATIONS = 4; // ✅ لازم يتأكد 4 مرات
+    const REQUIRED_CONFIRMATIONS = 3;
     let lastScanTime = 0;
-    const SCAN_DELAY = 1200; // ✅ تأخير أطول بين المحاولات (1.2 ثانية)
+    const SCAN_DELAY = 1000; // 1 ثانية
 
     function startScanner() {
         document.getElementById("reader").style.display = "block";
+        document.getElementById("error-message").innerText = ""; // مسح الأخطاء السابقة
         if (reader) {
             reader.stop().then(() => {
                 initScanner();
@@ -391,30 +393,31 @@
         reader.start(
             { facingMode: "environment" },
             {
-                fps: 10, // أبطأ علشان دقة أعلى
-                qrbox: { width: 260, height: 140 }, // منطقة ثابتة
+                fps: 10,
+                qrbox: { width: 260, height: 140 },
                 aspectRatio: 1.5,
                 disableFlip: true,
                 experimentalFeatures: {
                     useBarCodeDetectorIfSupported: true
                 },
                 videoConstraints: {
-                    focusMode: "continuous", // يثبت الفوكس
+                    focusMode: "continuous",
                     width: { ideal: 1280 },
-                    height: { ideal: 720 },
-                    facingMode: "environment",
-                    torch: true // لو متاح يشغل الفلاش
+                    height: { ideal: 720 }
                 }
             },
             (decodedText, decodedResult) => {
                 const now = Date.now();
 
-                // ⛔ تجاهل لو القراءة سريعة جدا
+                // ✅ لو مش 5 أرقام → خطأ للمستخدم
+                if (!/^\d{5}$/.test(decodedText)) {
+                    document.getElementById("error-message").innerText = "❌ الكود غير صالح. يجب أن يكون مكون من 5 أرقام فقط.";
+                    return;
+                }
+
+                // منع القراءة السريعة
                 if (now - lastScanTime < SCAN_DELAY) return;
                 lastScanTime = now;
-
-                // ✅ لازم يكون 5 أرقام
-                if (!/^\d{5}$/.test(decodedText)) return;
 
                 if (decodedText === lastScanned) {
                     confirmations++;
@@ -423,18 +426,18 @@
                     confirmations = 1;
                 }
 
-                // ✅ لو اتأكد 4 مرات → يبقى صحيح
                 if (confirmations >= REQUIRED_CONFIRMATIONS) {
                     document.getElementById("unique_code").value = decodedText;
+                    document.getElementById("error-message").innerText = ""; // مسح أي خطأ بعد نجاح القراءة
 
                     reader.stop().then(() => {
                         document.getElementById("reader").style.display = "none";
-                        console.log("✅ Scanner stopped after correct read:", decodedText);
+                        console.log("✅ Final code:", decodedText);
                     }).catch(err => console.error("Stop error:", err));
                 }
             },
             (errorMessage) => {
-                // تجاهل errors
+                // تجاهل errors الداخلية
             }
         ).catch(err => {
             console.error("Camera start failed:", err);
@@ -679,6 +682,7 @@
 
 </body>
 </html>
+
 
 
 
