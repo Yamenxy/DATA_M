@@ -300,7 +300,18 @@
                         <option value="الشمس">الشمس</option>
                     </select>
                     <label style="font-size: 1em; color: #4a4a4a; margin-top: 15px;">الباركود:</label>
-<input type="text" name="الكود" id="unique_code" readonly placeholder="سيظهر هنا رقم الباركود بعد المسح">
+<input 
+    type="text" 
+    name="الكود" 
+    id="unique_code" 
+    readonly 
+    placeholder="سيظهر هنا رقم الباركود بعد المسح"
+    inputmode="numeric" 
+    pattern="\d{5}" 
+    maxlength="5" 
+    minlength="5"
+    title="الباركود يجب أن يكون 5 أرقام فقط">
+                    
 <div id="barcode-scanner-wrapper" style="margin-top: 10px;">
   <div id="reader" style="display: none; width: 100%; height: auto; position: relative;">
     <div style="
@@ -664,6 +675,7 @@
 
 </body>
 </html>
+
 
 
 
