@@ -365,12 +365,14 @@
     </div>
 
 
-    <script src="https://unpkg.com/html5-qrcode"></script>
+   <script src="https://unpkg.com/html5-qrcode"></script>
 <script>
     let reader;
     let lastScanned = "";
     let confirmations = 0;
-    const REQUIRED_CONFIRMATIONS = 3; // number of times the same code must appear
+    const REQUIRED_CONFIRMATIONS = 4; // ✅ لازم يتأكد 4 مرات
+    let lastScanTime = 0;
+    const SCAN_DELAY = 1200; // ✅ تأخير أطول بين المحاولات (1.2 ثانية)
 
     function startScanner() {
         document.getElementById("reader").style.display = "block";
@@ -389,15 +391,29 @@
         reader.start(
             { facingMode: "environment" },
             {
-                fps: 10,
-                qrbox: { width: 300, height: 150 },
+                fps: 10, // أبطأ علشان دقة أعلى
+                qrbox: { width: 260, height: 140 }, // منطقة ثابتة
                 aspectRatio: 1.5,
-                disableFlip: false
+                disableFlip: true,
+                experimentalFeatures: {
+                    useBarCodeDetectorIfSupported: true
+                },
+                videoConstraints: {
+                    focusMode: "continuous", // يثبت الفوكس
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 },
+                    facingMode: "environment",
+                    torch: true // لو متاح يشغل الفلاش
+                }
             },
             (decodedText, decodedResult) => {
-                console.log("Scanned:", decodedText);
+                const now = Date.now();
 
-                // ✅ Accept only numeric barcodes
+                // ⛔ تجاهل لو القراءة سريعة جدا
+                if (now - lastScanTime < SCAN_DELAY) return;
+                lastScanTime = now;
+
+                // ✅ لازم يكون 5 أرقام
                 if (!/^\d{5}$/.test(decodedText)) return;
 
                 if (decodedText === lastScanned) {
@@ -407,25 +423,25 @@
                     confirmations = 1;
                 }
 
-                // ✅ Confirm after REQUIRED_CONFIRMATIONS times
+                // ✅ لو اتأكد 4 مرات → يبقى صحيح
                 if (confirmations >= REQUIRED_CONFIRMATIONS) {
                     document.getElementById("unique_code").value = decodedText;
 
-                    // stop scanner to avoid multiple inputs
                     reader.stop().then(() => {
                         document.getElementById("reader").style.display = "none";
-                        console.log("Scanner stopped after successful read.");
+                        console.log("✅ Scanner stopped after correct read:", decodedText);
                     }).catch(err => console.error("Stop error:", err));
                 }
             },
             (errorMessage) => {
-                // console.log("Scanning error:", errorMessage);
+                // تجاهل errors
             }
         ).catch(err => {
             console.error("Camera start failed:", err);
         });
     }
 </script>
+
 
     
     <script>
@@ -663,6 +679,7 @@
 
 </body>
 </html>
+
 
 
 
