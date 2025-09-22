@@ -1,4 +1,4 @@
-<!-- الصف الاول الثانوي -->
+<!-- الصف الثاني الثانوي -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -273,7 +273,7 @@
             <div class="main">
                 <div class="signup">
                     <label for="chk" aria-hidden="true" style="font-size: large;">تسجيل الدخول</label>
-                    <label for="chk" aria-hidden="true" style="font-size: large;">الصف الاول الثانوي</label>
+                    <label for="chk" aria-hidden="true" style="font-size: large;">الصف الثاني الثانوي</label>
                     <input type="text" name="الاسم" placeholder="اسم الطالب رباعي" required>
                     <input type="email" name="email" placeholder="البريد الإلكتروني" required>
                     <input type="text" name="رقم الطالب" placeholder="رقم هاتف الطالب" required>
@@ -299,27 +299,21 @@
                         <option value="انس (كومباوند المخابرات)">انس (كومباوند المخابرات)</option>
                         <option value="الشمس">الشمس</option>
                     </select>
-<label style="font-size: 1em; color: #4a4a4a; margin-top: 15px;">الباركود:</label>
-<div id="reader" style="width:300px; height:200px; display:none;"></div>
-
-<!-- ✅ Allow only 5 digits -->
-<input type="text" id="unique_code" readonly placeholder="سيظهر هنا رقم الباركود بعد المسح" maxlength="5" pattern="\d{5}">
-
-<div id="error-message" style="color:red; margin-top:10px; font-weight:bold;"></div>
-
-<div id="reader" style="display: none; width: 100%; height: auto; position: relative;">
-  <div style="
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 80%;
-      height: 60px;
-      transform: translate(-50%, -50%);
-      border: 2px dashed white;
-      border-radius: 10px;
-      z-index: 10;"></div>
-</div>
-</div>
+                    <label style="font-size: 1em; color: #4a4a4a; margin-top: 15px;">الباركود:</label>
+<input type="text" name="الكود" id="unique_code" readonly placeholder="سيظهر هنا رقم الباركود بعد المسح">
+<div id="barcode-scanner-wrapper" style="margin-top: 10px;">
+  <div id="reader" style="display: none; width: 100%; height: auto; position: relative;">
+    <div style="
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 80%;
+        height: 60px;
+        transform: translate(-50%, -50%);
+        border: 2px dashed white;
+        border-radius: 10px;
+        z-index: 10;"></div>
+  </div>
 </div>
 
 <!-- Buttons OUTSIDE the hidden reader area -->
@@ -369,30 +363,8 @@
         </form>
     </div>
 
-    <script>
-  const input = document.getElementById("unique_code");
-  const errorMsg = document.getElementById("error-message");
 
-  // ✅ Check whenever input changes
-  input.addEventListener("input", function() {
-    // Remove non-digits
-    this.value = this.value.replace(/\D/g, "");
-
-    // Limit to 5 digits
-    if (this.value.length > 5) {
-      this.value = this.value.slice(0, 5);
-    }
-
-    // Show error if not exactly 5 digits
-    if (this.value.length > 0 && this.value.length < 5) {
-      errorMsg.textContent = "⚠️ يجب أن يتكون الباركود من 5 أرقام فقط.";
-    } else {
-      errorMsg.textContent = "";
-    }
-  });
-</script>
-
- <script src="https://unpkg.com/html5-qrcode"></script>
+   <script src="https://unpkg.com/html5-qrcode"></script>
 <script>
     let reader;
     let lastScanned = "";
@@ -456,10 +428,9 @@
     }
 </script>
 
-
     
     <script>
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbyAHR2d_DAJnP6qX8DKg4_aYgq0ZSc3V6tJ6NyolBok-q10TTj3UaTQQtKOchLYYbiQqA/exec   ';
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbyAHR2d_DAJnP6qX8DKg4_aYgq0ZSc3V6tJ6NyolBok-q10TTj3UaTQQtKOchLYYbiQqA/exec';
         const form = document.getElementById('contact-form');
         const loadingBox = document.getElementById('loadingBox');
 
@@ -499,7 +470,7 @@
         }
 
         function closeModal() {
-            window.location.href = 'https://yamenxy.github.io/new_goto/';
+            window.location.href = 'https://yamenxy.github.io/new_goto_2/';
             successModal.style.display = 'none';
             document.getElementById('overlay').style.display = 'none';
             form.reset();
@@ -693,10 +664,6 @@
 
 </body>
 </html>
-
-
-
-
 
 
 
